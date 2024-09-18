@@ -58,6 +58,8 @@ class inputs:
             XX, YY, descriptors = self.read_MPEA()
         elif self.input_type == 'connor-polymers':
             XX, YY, descriptors = self.read_connor_polymers()
+        elif self.input_type == 'laser-cuts':
+            XX, YY, descriptors = self.read_laser()
         return XX, YY, descriptors
     
 #    def read_ClancyLab(self):
@@ -233,6 +235,17 @@ class inputs:
         YY = df['Target (eV)'].to_numpy().reshape(-1,1)
 
         descriptors = np.array(df.columns[4:])
+
+        return XX, YY, descriptors
+
+    def read_laser(self):
+        xls = pd.ExcelFile(self.filename)
+        df = pd.read_excel(xls, 'clean-data')
+
+        XX = df.drop(columns=['Height'], axis=1)
+        YY = df['Height'].to_numpy().reshape(-1,1)
+
+        descriptors = np.array(df.columns[0:5])
 
         return XX, YY, descriptors
     
