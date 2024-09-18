@@ -1,6 +1,6 @@
 ---
 # General inputs
-run_folder : &home '/Users/mzhang/Projects/Clancy/PAL2' # Folder where code is run and input json exist
+run_folder : &home '/Users/mzhang/Projects/Clancy/pal2-local/' # Folder where code is run and input json exist
 output_folder : 
 - *home 
 - 'bo_output/'
