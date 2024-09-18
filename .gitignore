@@ -20,4 +20,7 @@ logs/
 logs/*
 *.txt
 */.venv/*
+*/docs/*
 *~
+/docs
+README.md
