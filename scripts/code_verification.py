@@ -90,7 +90,7 @@ class code_verification:
         other_data['training_score'] = score
         # print("Training score: ", score)
 
-        scores = cross_val_score(clf, fs.X_train, fs.y_train,cv=10)
+        scores = cross_val_score(clf, fs.X_train, fs.y_train,cv=9)
         other_data['cross_val_score'] = scores.mean()
         # print("Mean cross-validation score: %.2f" % scores.mean())
 
