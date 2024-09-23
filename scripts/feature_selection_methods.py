@@ -7,7 +7,7 @@ import scipy
 import os
 
 import xgboost as xgb
-from xgboost.sklearn import XGBRegressor
+from xgboost.sklearn import XGBRegressor, XGBClassifier
 
 import sklearn as sk
 from sklearn.metrics import mean_squared_error
@@ -53,10 +53,17 @@ class feature_selection_algorithms:
     
     # XGBoost
     def xgboost(self, **kwargs):
-        
-        clf = XGBRegressor(n_estimators=200, learning_rate=0.025, max_depth=20, verbosity=0, booster='gbtree', 
+
+        obj = kwargs.get('objective', 'mse')
+
+        if obj == 'mse':
+            clf = XGBRegressor(n_estimators=200, learning_rate=0.025, max_depth=20, verbosity=0, booster='gbtree', 
                     reg_alpha=np.exp(-6.788644799030888), reg_lambda=np.exp(-7.450413274554533), 
                     gamma=np.exp(-5.374463422208394), subsample=0.5, objective= 'reg:squarederror', n_jobs=1)  
+        elif obj == 'classify': # For classification
+            clf = XGBClassifier(n_estimators=200, learning_rate=0.025, max_depth=20, verbosity=0, booster='gbtree', 
+                    reg_alpha=np.exp(-6.788644799030888), reg_lambda=np.exp(-7.450413274554533), 
+                    gamma=np.exp(-5.374463422208394), subsample=0.5, objective= 'reg:logistic', n_jobs=1) 
         
         paras = clf.get_params()
 
@@ -133,6 +140,7 @@ if __name__=="__main__":
     input_type = input_dict['InputType']
     input_path = input_dict['InputPath'][0]+input_dict['InputPath'][1]
     input_file = input_dict['InputFile']
+    input_obj = input_dict['InputObj'] # OBJECTIVE FUNCTION TYPE FOR XGBOOST 
     add_target_noise = input_dict['AddTargetNoise']
     test_size = input_dict['test_size_fs']
     random_state = input_dict['random_state']
@@ -147,7 +155,10 @@ if __name__=="__main__":
     XX, YY, descriptors = input.read_inputs(input_dict['verbose'])
 
     # Transforming datasets by standardization
-    if input_dict['standardize_data']:
+    if input_obj == 'classify' and input_dict['standardize_data']:
+        X_stand, scalerX_transform = utilsd.standardize_data(XX)
+        Y_stand = YY
+    elif input_dict['standardize_data']:
         X_stand, scalerX_transform = utilsd.standardize_data(XX)
         Y_stand, scalerY_transform = utilsd.standardize_data(YY)
     else:
@@ -189,7 +200,7 @@ if __name__=="__main__":
 
 
     ## XGboost:
-    xgboost_df, clf = tests.test_xgboost(X_stand,Y_stand,descriptors, onlyImportant = onlyImportant, test_size = test_size, random_state = random_state)
+    xgboost_df, clf = tests.test_xgboost(X_stand,Y_stand,descriptors, onlyImportant = onlyImportant, test_size = test_size, random_state = random_state, obj = input_obj)
     # xgboost_df.to_csv(newpath + snakemake.output[3],index=True)
     xgboost_df.to_csv(newpath + 'xgboost_data.csv',index=True)
     fig = plt.figure(figsize=(7, 5.5))

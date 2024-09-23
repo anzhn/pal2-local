@@ -69,6 +69,7 @@ num_restarts : 10
 raw_samples : 512
 
 #Input parameters
+InputObj: 'classify' # 'mse' or 'classify'
 dataset_folder: 'laser'
 InputType: 'laser-cuts'
 InputPath: 

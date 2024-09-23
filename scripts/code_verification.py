@@ -81,11 +81,11 @@ class code_verification:
         
         return importance_df
     
-    def test_xgboost(X_stand, Y_stand, descriptors, onlyImportant=True, test_size = 0.2, random_state = 40):
+    def test_xgboost(X_stand, Y_stand, descriptors, onlyImportant=True, test_size = 0.2, random_state = 40, obj = 'mse'):
         fs = feature_selection.feature_selection_algorithms(X_stand,Y_stand,test_size=test_size,random_state=random_state)
         
         other_data = dict()
-        clf = fs.xgboost()
+        clf = fs.xgboost(objective = obj)
         score = clf.score(fs.X_train, fs.y_train)
         other_data['training_score'] = score
         # print("Training score: ", score)
