@@ -9,7 +9,6 @@ bo_output/
 surrogate_correct.py
 surrogate_models/*.csv
 */.ipynb_checkpoints
-results/
 datasets/
 .snakemake/
 csv_paths.txt
