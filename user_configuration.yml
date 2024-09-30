@@ -4,7 +4,7 @@ run_folder : &home '/Users/mzhang/Projects/Clancy/pal2-local/' # Folder where co
 output_folder : 
 - *home 
 - 'bo_output/'
-test_size : 0.1
+test_size : 0.5
 verbose : True
 deep_verbose : False
 
@@ -12,7 +12,7 @@ deep_verbose : False
 add_target_noise : False
 
 # Feature selection inputs
-test_size_fs : 0.1
+test_size_fs : 0.5
 random_state : 40
 onlyImportant : False
 select_features_otherModels : True
@@ -64,7 +64,7 @@ saveModel_filename :
 # Acquisition parameters
 standardize_data : True
 save_output : True
-n_batch : 100
+n_batch : 2 
 num_restarts : 10
 raw_samples : 512
 
@@ -75,6 +75,7 @@ InputType: 'laser-cuts'
 InputPath: 
 - *home
 - 'datasets/'
+#InputFile: 'LHC Sampling 50.xlsx'
 InputFile: 'LHC Sampling 50.xlsx'
 AddTargetNoise: False
 Comment: InputType options include PerovAlloys to read the perovskite alloy dataset, PALSearch to read the PAL-search datasets, Gryffin is to read the gryffin pickle file

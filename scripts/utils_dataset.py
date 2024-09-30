@@ -107,6 +107,11 @@ def generate_training_data(random_state,test_size,snakemake_input):
     X_train, X_test, Y_train, Y_test = train_test_split(X_stand, Y_stand, 
                                                         test_size=test_size, 
                                                         random_state=random_state) #,stratify=Y_stand)
+
+    print('Xtrain', X_train)
+    print('Xtest', X_test)
+    print('Ytrain', Y_train)
+    print('Ytest', Y_test)
    
     Var_train = torch.ones(len(Y_train)) 
     Var_test = torch.ones(len(Y_test)) 
@@ -172,6 +177,13 @@ def generate_training_data_NN(random_state,test_size,snakemake_input):
     X_train, X_test, Y_train, Y_test = train_test_split(X_stand, Y_stand, 
                                                         test_size=input_dict['test_size'], 
                                                         random_state=random_state)
+
+    print('Xtrain', X_train)
+    print('Xtest', X_test)
+    print('Ytrain', Y_train)
+    print('Ytest', Y_test)
+
+
    
     Var_train = torch.ones(len(Y_train)) 
     Var_test = torch.ones(len(Y_test)) 

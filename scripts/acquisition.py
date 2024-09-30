@@ -80,6 +80,9 @@ class acquisition: # Rename this since it is the optimization framework.
     def optimize_acqf_and_get_observation(self, acq_func, X_test, Y_test):
         """Optimizes the acquisition function, and returns a new candidate"""
         # optimize
+        print('choices:', X_test)
+        print("Choices shape:", X_test.shape)
+        print("Choices dtype:", X_test.dtype)
         candidates, _ = optimize_acqf_discrete(
             acq_function=acq_func,
             choices=X_test,
@@ -101,6 +104,9 @@ class acquisition: # Rename this since it is the optimization framework.
         X_test_new = X_test[torch.arange(0, X_test.shape[0]) != index, ...]
         Y_test_new = Y_test[..., torch.arange(0, Y_test.shape[1]) != index]
 
+        print("Choices shape:", X_test_new.shape)
+        print("Choices dtype:", X_test_new.dtype)
+
         return new_x, new_y, index, X_test_new, Y_test_new
 
     
@@ -121,8 +127,18 @@ class acquisition: # Rename this since it is the optimization framework.
                 # fit the models every n_update iterations
                 model_gp, likelihood_gp = self.Train_object.train_surrogate(X_train, Y_train, self.kernel)
 
+            print('Pre:')
+            print('Choices:', X_test)
+            print("Choices shape:", X_test.shape)
+            print("Choices dtype:", X_test.dtype)
+
             # optimize and get new observation using acquisition function
             new_x, new_y, index, X_test_new, Y_test_new = self.optimize_acqf_and_get_observation(acq_func, X_test, Y_test)
+
+            print('Post')
+            print('Choices:', X_test_new)
+            print("Choices shape:", X_test_new.shape)
+            print("Choices dtype:", X_test_new.dtype)
 
             # Update remaining choices tensor
             X_test = X_test_new
