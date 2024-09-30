@@ -107,7 +107,7 @@ class feature_selection_algorithms:
         if deep_verbose:
             print("XGBoost Training score: ", score)
 
-        scores = cross_val_score(clf, self.X_train, self.y_train,cv=10)
+        scores = cross_val_score(clf, self.X_train, self.y_train,cv=5)
         if deep_verbose:
             print("XGBoost Mean cross-validation score: %.2f" % scores.mean())
 
