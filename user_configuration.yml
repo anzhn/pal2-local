@@ -17,7 +17,7 @@ random_state : 40
 onlyImportant : False
 select_features_otherModels : True
 select_features_NN : True
-cv: 9 # Enter a number or LeaveOneOut()
+cv: # Enter a number, leave blank for LeaveOneOut()
 
 # BO inputs
 n_trials : 1

@@ -140,6 +140,7 @@ if __name__=="__main__":
     onlyImportant = input_dict['onlyImportant']
     output_dir = input_dict['output_folder'][0]+input_dict['output_folder'][1]
     input_cv = input_dict['cv']
+    if input_cv == None: input_cv = LeaveOneOut()
 
     input = input_class.inputs(input_type=input_type,
                                 input_path=input_path,
@@ -168,7 +169,7 @@ if __name__=="__main__":
     plt.tight_layout()
 
     ## Lasso:
-    lasso_df, model = tests.test_lasso(X_stand,Y_stand,descriptors, onlyImportant = onlyImportant, test_size = test_size, random_state = random_state, alpha_range = np.arange(0.001,0.4,0.001), cv = input_cv) #TODO: add from snakemake input
+    lasso_df, model = tests.test_lasso(X_stand,Y_stand,descriptors, onlyImportant = onlyImportant, test_size = test_size, random_state = random_state, alpha_range = np.arange(0.001,0.4,0.001), cv = input_cv) 
     # lasso_df.to_csv(newpath + snakemake.output[0], index=True)
     lasso_df.to_csv(newpath + 'lasso_data.csv', index=True)
     fig = plt.figure(figsize=(7, 5.5))
