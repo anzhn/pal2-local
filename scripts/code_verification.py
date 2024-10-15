@@ -34,6 +34,9 @@ class code_verification:
         importance = np.abs(coefficients)
         feature_importance_dict = {}
 
+        other_data['alpha_range'] = alpha_range
+        other_data['scores'] = search.cv_results_["mean_test_score"].tolist()
+        other_data['scores_std'] = search.cv_results_["std_test_score"].tolist()
         
         if onlyImportant:
             dict_keys = descriptors[importance > 0.0]

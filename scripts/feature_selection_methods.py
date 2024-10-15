@@ -183,11 +183,37 @@ if __name__=="__main__":
     plt.savefig(newpath + 'lasso_plot.pdf', bbox_inches='tight')
 
     plt.show()
+
+    # Generate plots for optimizing lasso loss parameter (alpha)
+    alpha_range = model['alpha_range']
+    scores = model['scores']
+    scores_std = model['scores_std']
+    fig = plt.figure(figsize=(7, 5.5))
+    plt.semilogx(alpha_range, scores)
     
+    # std_error = scores_std / np.sqrt(8) #TODO: is sqrt8 supposed to be hard coded?
+    std_error = scores_std / np.sqrt(8)  
+
+    plt.semilogx(alpha_range, scores + std_error, "b--")
+    plt.semilogx(alpha_range, scores - std_error, "b--")
+    
+    # alpha=0.2 controls the translucency of the fill color
+    plt.fill_between(alpha_range, scores + std_error, scores - std_error, alpha=0.2)
+    
+    plt.ylabel("CV score +/- std error")
+    plt.xlabel("alpha")
+    plt.axhline(np.max(scores), linestyle="--", color=".5")
+    plt.xlim([alpha_range[0], alpha_range[-1]])
+
+    plt.savefig(newpath + 'lasso_alpha.pdf', bbox_inches='tight')
+
     # with open(newpath + snakemake.output[2], 'w') as f:
     #     json.dump(model, f)
+    model_serializable = {key: (value.tolist() if isinstance(value, np.ndarray) else value)
+                      for key, value in model.items()}
+    
     with open(newpath + 'lasso_model.json', 'w') as f:
-        json.dump(model, f)
+        json.dump(model_serializable, f)
 
 
     ## XGboost:
