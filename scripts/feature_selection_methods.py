@@ -15,6 +15,7 @@ from sklearn.model_selection import cross_validate
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
+from sklearn.model_selection import LeaveOneOut 
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import Lasso
@@ -42,9 +43,9 @@ class feature_selection_algorithms:
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(XX, YY, test_size=test_size, random_state=random_state)
         
     # LASSO 
-    def lasso(self,alpha_range=np.arange(0.001,0.1,0.001)):
+    def lasso(self,alpha_range=np.arange(0.001,0.1,0.001), cv = 5, scoring = "neg_mean_squared_error"):
         pipeline = Pipeline([('scaler',StandardScaler()),('model',Lasso())])
-        search = GridSearchCV(pipeline,{'model__alpha':alpha_range},cv = 5, scoring="neg_mean_squared_error")
+        search = GridSearchCV(pipeline,{'model__alpha':alpha_range},cv = cv, scoring=scoring)
         search.fit(self.X_train,self.y_train)
         lasso_parameters = search.best_params_
         coefficients = search.best_estimator_.named_steps['model'].coef_
@@ -93,14 +94,14 @@ class feature_selection_algorithms:
         return rho_coeff
     
     # Features selected by XGBoost
-    def selected_features_xgboost(self, descriptors, deep_verbose=False):
+    def selected_features_xgboost(self, descriptors, deep_verbose=False, cv = 10):
         
         clf = self.xgboost()
         score = clf.score(self.X_train, self.y_train)
         if deep_verbose:
             print("XGBoost Training score: ", score)
 
-        scores = cross_val_score(clf, self.X_train, self.y_train,cv=10)
+        scores = cross_val_score(clf, self.X_train, self.y_train,cv=cv)
         if deep_verbose:
             print("XGBoost Mean cross-validation score: %.2f" % scores.mean())
 
@@ -138,6 +139,7 @@ if __name__=="__main__":
     random_state = input_dict['random_state']
     onlyImportant = input_dict['onlyImportant']
     output_dir = input_dict['output_folder'][0]+input_dict['output_folder'][1]
+    input_cv = input_dict['cv']
 
     input = input_class.inputs(input_type=input_type,
                                 input_path=input_path,
@@ -166,7 +168,7 @@ if __name__=="__main__":
     plt.tight_layout()
 
     ## Lasso:
-    lasso_df, model = tests.test_lasso(X_stand,Y_stand,descriptors, onlyImportant = onlyImportant, test_size = test_size, random_state = random_state)
+    lasso_df, model = tests.test_lasso(X_stand,Y_stand,descriptors, onlyImportant = onlyImportant, test_size = test_size, random_state = random_state, alpha_range = np.arange(0.001,0.4,0.001), cv = input_cv) #TODO: add from snakemake input
     # lasso_df.to_csv(newpath + snakemake.output[0], index=True)
     lasso_df.to_csv(newpath + 'lasso_data.csv', index=True)
     fig = plt.figure(figsize=(7, 5.5))
@@ -189,7 +191,7 @@ if __name__=="__main__":
 
 
     ## XGboost:
-    xgboost_df, clf = tests.test_xgboost(X_stand,Y_stand,descriptors, onlyImportant = onlyImportant, test_size = test_size, random_state = random_state)
+    xgboost_df, clf = tests.test_xgboost(X_stand,Y_stand,descriptors, onlyImportant = onlyImportant, test_size = test_size, random_state = random_state, cv = input_cv)
     # xgboost_df.to_csv(newpath + snakemake.output[3],index=True)
     xgboost_df.to_csv(newpath + 'xgboost_data.csv',index=True)
     fig = plt.figure(figsize=(7, 5.5))

@@ -23,12 +23,12 @@ class code_verification:
         
     
     # Testing if the input format and computation of LASSO is correct
-    def test_lasso(X_stand, Y_stand, descriptors, onlyImportant=True, test_size = 0.2, random_state = 40):
+    def test_lasso(X_stand, Y_stand, descriptors, onlyImportant=True, test_size = 0.2, random_state = 40,alpha_range=np.arange(0.0001,0.01,0.0001), cv = 5):
         
         
         fs = feature_selection.feature_selection_algorithms(X_stand,Y_stand,test_size=test_size,random_state=random_state)
         
-        search, lasso_parameters, coefficients = fs.lasso(alpha_range=np.arange(0.0001,0.01,0.0001))
+        search, lasso_parameters, coefficients = fs.lasso(alpha_range = alpha_range, cv = cv)
         other_data = search.best_params_
         coefficients = search.best_estimator_.named_steps['model'].coef_
         importance = np.abs(coefficients)
@@ -81,7 +81,7 @@ class code_verification:
         
         return importance_df
     
-    def test_xgboost(X_stand, Y_stand, descriptors, onlyImportant=True, test_size = 0.2, random_state = 40):
+    def test_xgboost(X_stand, Y_stand, descriptors, onlyImportant=True, test_size = 0.2, random_state = 40, cv = 10):
         fs = feature_selection.feature_selection_algorithms(X_stand,Y_stand,test_size=test_size,random_state=random_state)
         
         other_data = dict()
@@ -90,7 +90,7 @@ class code_verification:
         other_data['training_score'] = score
         # print("Training score: ", score)
 
-        scores = cross_val_score(clf, fs.X_train, fs.y_train,cv=10)
+        scores = cross_val_score(clf, fs.X_train, fs.y_train,cv=cv)
         other_data['cross_val_score'] = scores.mean()
         # print("Mean cross-validation score: %.2f" % scores.mean())
 
