@@ -37,6 +37,8 @@ class code_verification:
         other_data['alpha_range'] = alpha_range
         other_data['scores'] = search.cv_results_["mean_test_score"].tolist()
         other_data['scores_std'] = search.cv_results_["std_test_score"].tolist()
+        other_data['coe'] = coefficients.tolist()
+        other_data['tR2e'] = search.best_estimator_.score(X_stand, Y_stand) # training R2 error
         
         if onlyImportant:
             dict_keys = descriptors[importance > 0.0]

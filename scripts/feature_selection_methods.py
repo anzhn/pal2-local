@@ -208,13 +208,17 @@ if __name__=="__main__":
 
     plt.savefig(newpath + 'lasso_alpha.pdf', bbox_inches='tight')
 
+    # save model parameters
+    model_params = {}
+    model_params['alpha_range'] = (alpha_range[0], alpha_range[-1], 
+                                   alpha_range[1] - alpha_range[0])
+    model_params['coefficients'] = model['coe']
+    model_params['training R2 error'] = model['tR2e']
+
     # with open(newpath + snakemake.output[2], 'w') as f:
     #     json.dump(model, f)
-    model_serializable = {key: (value.tolist() if isinstance(value, np.ndarray) else value)
-                      for key, value in model.items()}
-    
     with open(newpath + 'lasso_model.json', 'w') as f:
-        json.dump(model_serializable, f)
+        json.dump(model_params, f)
 
 
     ## XGboost:
