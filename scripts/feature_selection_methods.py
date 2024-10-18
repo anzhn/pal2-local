@@ -206,7 +206,7 @@ if __name__=="__main__":
     alpha_range = model['alpha_range']
     scores = model['scores']
     scores_std = model['scores_std']
-    fig = plt.figure(figsize=(7, 5.5))
+    fig = plt.figure(figsize=(8, 6))
     plt.semilogx(alpha_range, scores)
     
     # std_error = scores_std / np.sqrt(8) #TODO: is sqrt8 supposed to be hard coded?
