@@ -23,7 +23,7 @@ class code_verification:
         
     
     # Testing if the input format and computation of LASSO is correct
-    def test_lasso(X_stand, Y_stand, descriptors, onlyImportant=True, test_size = 0.2, random_state = 40,alpha_range=np.arange(0.0001,0.01,0.0001), cv = 5):
+    def test_lasso(X_stand, Y_stand, descriptors, onlyImportant=True, test_size = 0.2, random_state = 40,alpha_range=np.arange(0.0001,0.01,0.0001), cv):
         
         
         fs = feature_selection.feature_selection_algorithms(X_stand,Y_stand,test_size=test_size,random_state=random_state)
@@ -86,7 +86,7 @@ class code_verification:
         
         return importance_df
     
-    def test_xgboost(X_stand, Y_stand, descriptors, onlyImportant=True, test_size = 0.2, random_state = 40, cv = 10):
+    def test_xgboost(X_stand, Y_stand, descriptors, onlyImportant=True, test_size = 0.2, random_state = 40, cv):
         fs = feature_selection.feature_selection_algorithms(X_stand,Y_stand,test_size=test_size,random_state=random_state)
         
         other_data = dict()

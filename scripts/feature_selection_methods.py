@@ -43,7 +43,7 @@ class feature_selection_algorithms:
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(XX, YY, test_size=test_size, random_state=random_state)
         
     # LASSO 
-    def lasso(self,alpha_range=np.arange(0.001,0.1,0.001), cv = 5, scoring = "neg_mean_squared_error"):
+    def lasso(self,alpha_range=np.arange(0.001,0.1,0.001), cv, scoring = "neg_mean_squared_error"):
         pipeline = Pipeline([('scaler',StandardScaler()),('model',Lasso())])
         search = GridSearchCV(pipeline,{'model__alpha':alpha_range},cv = cv, scoring=scoring)
         search.fit(self.X_train,self.y_train)
@@ -111,7 +111,7 @@ class feature_selection_algorithms:
         return pcc_matrix
     
     # Features selected by XGBoost
-    def selected_features_xgboost(self, descriptors, deep_verbose=False, cv = 10):
+    def selected_features_xgboost(self, descriptors, deep_verbose=False, cv):
         
         clf = self.xgboost()
         score = clf.score(self.X_train, self.y_train)
