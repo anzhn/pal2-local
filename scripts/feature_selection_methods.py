@@ -82,7 +82,7 @@ class feature_selection_algorithms:
 
         return clf
     
-    # Pearson correlation coefficients
+    # Pearson correlation coefficients between descriptors and target
     def pearson_corr_coeff(self,x,y):
         
         XX_transpose = np.transpose(x)
@@ -92,6 +92,23 @@ class feature_selection_algorithms:
             rho_coeff.append(rho_coeff_temp.pvalue)
             
         return rho_coeff
+
+    # Pearson correlation coefficient between descriptors
+    @staticmethod
+    def PCC_matrix(X_stand, descriptors):
+
+        X_stand_transpose = np.transpose(X_stand)
+        rho_coeff = []
+        pcc = []
+        for i in range(len(descriptors)):
+            for j in range(len(descriptors)):
+                rho_coeff = scipy.stats.pearsonr(X_stand_transpose[i],X_stand_transpose[j])
+                pcc.append(rho_coeff.statistic)
+
+        pcc_matrix = np.array(pcc,dtype=np.float32) 
+        pcc_matrix = np.reshape(pcc_matrix,(len(descriptors),len(descriptors)))
+
+        return pcc_matrix
     
     # Features selected by XGBoost
     def selected_features_xgboost(self, descriptors, deep_verbose=False, cv = 10):
@@ -256,5 +273,28 @@ if __name__=="__main__":
     # Adjust layout
     plt.tight_layout()
     plt.savefig(newpath + 'pearson_plot.pdf', bbox_inches='tight')
+
+    plt.show()
+
+    # PCC matrix:
+    pcc_matrix = feature_selection_algorithms.PCC_matrix(X_stand, descriptors) 
+    fig = plt.figure(figsize=(6, 6))
+    ax = fig.add_subplot(111)
+    cax = ax.imshow(pcc_matrix,cmap='RdBu',vmin=-1, vmax=1)
+    
+    # Add text annotations for each cell
+    for i in range(pcc_matrix.shape[0]):
+        for j in range(pcc_matrix.shape[1]):
+            value = round(pcc_matrix[i, j], 2)
+            plt.text(j, i, f'{value:.2f}', ha='center', va='center', color='black', fontsize=10)
+
+    ax.xaxis.set_ticks(list(range(0,len(descriptors))))
+    ax.xaxis.set_ticklabels(descriptors,
+                             rotation=90)
+    ax.yaxis.set_ticks(list(range(0,len(descriptors))))
+    ax.yaxis.set_ticklabels(descriptors)
+
+    fig.colorbar(cax,label='Descriptor Correlation Coeff')
+    plt.savefig(newpath + 'input_pcc_matrix.pdf', bbox_inches='tight')
 
     plt.show()
