@@ -298,3 +298,29 @@ if __name__=="__main__":
     plt.savefig(newpath + 'input_pcc_matrix.pdf', bbox_inches='tight')
 
     plt.show()
+
+    ## Matrix of scatterplots with input features plotted against each other and target
+    XX['Target'] = YY 
+    columns = list(XX.keys())
+    num_columns = len(columns)
+    
+    # Create a matrix of plots
+    fig, axes = plt.subplots(num_columns, num_columns, figsize=(20, 20))
+
+    # Plot each pair of columns against each other
+    for i in range(num_columns):
+        for j in range(num_columns):
+            x_column = XX[columns[i]]
+            y_column = XX[columns[j]]
+
+            axes[i, j].plot(y_column, x_column,'o-')
+            if i == num_columns-1:
+                axes[i, j].set_xlabel(columns[j])
+            if j == 0:
+                axes[i, j].set_ylabel(columns[i])
+
+    XX.drop(['Target'], axis=1, inplace=True) # Drop the target column because it's not supposed to be there
+
+    # Adjust layout
+    plt.tight_layout()
+    plt.savefig(newpath + 'feature_scatter_matrix.pdf', bbox_inches='tight')
