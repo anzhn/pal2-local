@@ -17,7 +17,25 @@ random_state : 40
 onlyImportant : False
 select_features_otherModels : True
 select_features_NN : True
-cv: # Enter a number, leave blank for LeaveOneOut()
+cv : # Enter a number, leave blank for LeaveOneOut()
+# LASSO
+lasso_alpha_range:
+  start: 0.001
+  stop: 0.5
+  step: 0.001
+lasso_tol: 0.0001
+lasso_max_iter: 10000
+# XGBoost
+xgb_n_estimators : 200 # number of trees
+xgb_eta : 0.01 # learning rate
+xgb_max_depth : 5 # max tree depth
+xgb_min_child : 1 # default = 1, usually analogous to the min number of samples in a leaf
+xgb_gamma : 0.0005 # tree pruning, min loss reduction to make further partition on leaf node
+xgb_lambda : 0.0006 # regularization parameter
+xgb_subsample : 0.5 # default = 1
+xgb_cosample : 1 # default = 1
+xgb_alpha : 0.001 # similar to lasso alpha, regularization parameter
+xgb_objective : 'reg:squarederror'
 
 # BO inputs
 n_trials : 1

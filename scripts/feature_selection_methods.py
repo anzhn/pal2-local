@@ -43,8 +43,9 @@ class feature_selection_algorithms:
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(XX, YY, test_size=test_size, random_state=random_state)
         
     # LASSO 
-    def lasso(self,alpha_range=np.arange(0.001,0.1,0.001), cv, scoring = "neg_mean_squared_error"):
-        pipeline = Pipeline([('scaler',StandardScaler()),('model',Lasso())])
+    def lasso(self,alpha_range, cv, max_iter, tol, scoring = "neg_mean_squared_error"):
+        pipeline = Pipeline([('scaler',StandardScaler()),
+                             ('model',Lasso(max_iter = max_iter, tol = tol))])
         search = GridSearchCV(pipeline,{'model__alpha':alpha_range},cv = cv, scoring=scoring)
         search.fit(self.X_train,self.y_train)
         lasso_parameters = search.best_params_
@@ -111,7 +112,7 @@ class feature_selection_algorithms:
         return pcc_matrix
     
     # Features selected by XGBoost
-    def selected_features_xgboost(self, descriptors, deep_verbose=False, cv):
+    def selected_features_xgboost(self, descriptors, cv, deep_verbose=False):
         
         clf = self.xgboost()
         score = clf.score(self.X_train, self.y_train)
@@ -186,7 +187,12 @@ if __name__=="__main__":
     plt.tight_layout()
 
     ## Lasso:
-    lasso_df, model = tests.test_lasso(X_stand,Y_stand,descriptors, onlyImportant = onlyImportant, test_size = test_size, random_state = random_state, alpha_range = np.arange(0.001,0.4,0.001), cv = input_cv) 
+    alpha_range = np.arange(input_dict['lasso_alpha_range']['start'],
+                            input_dict['lasso_alpha_range']['stop'],
+                            input_dict['lasso_alpha_range']['step'])
+    tol = input_dict['lasso_tol']
+    max_iter = input_dict['lasso_max_iter']
+    lasso_df, model = tests.test_lasso(X_stand,Y_stand,descriptors, onlyImportant = onlyImportant, test_size = test_size, random_state = random_state, alpha_range = alpha_range, cv = input_cv, tol = tol, max_iter = max_iter) 
     # lasso_df.to_csv(newpath + snakemake.output[0], index=True)
     lasso_df.to_csv(newpath + 'lasso_data.csv', index=True)
     fig = plt.figure(figsize=(7, 5.5))
